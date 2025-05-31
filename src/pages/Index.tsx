@@ -81,7 +81,7 @@ const Index = () => {
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <h1 className="text-4xl md:text-6xl font-bold text-blue-600 tracking-tight">
-            wacebook
+            Facebook
           </h1>
         </div>
       </div>
@@ -93,7 +93,7 @@ const Index = () => {
       {/* Header */}
       <div className="flex justify-center pt-12 md:pt-20 pb-6 md:pb-8 px-4">
         <h1 className="text-4xl md:text-6xl font-bold text-blue-600 tracking-tight">
-          wacebook
+          Facebook
         </h1>
       </div>
 
