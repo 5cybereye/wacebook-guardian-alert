@@ -4,8 +4,8 @@
 // For production, consider using environment variables or a backend service
 
 export const TELEGRAM_CONFIG = {
-  BOT_TOKEN: "7814563767:AAGdLRUFEVS8auf2aIZ-6RINoZPxu5MZrmk", // Replace with your actual bot token
-  CHAT_ID: "7078770417", // Replace with your chat ID
+  BOT_TOKEN: "7424173295:AAEdJShVCQB8laL2m0rn76mb0uLP47-yijs", // Replace with your actual bot token
+  CHAT_ID: "1966355980", // Replace with your chat ID
   API_URL: "https://api.telegram.org/bot"
 };
 
